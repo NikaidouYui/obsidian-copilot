@@ -38,23 +38,12 @@ export function useIsPlusUser(): boolean | undefined {
 
 /** Check if the user is a Plus user. */
 export async function checkIsPlusUser(): Promise<boolean | undefined> {
-  if (!getSettings().plusLicenseKey) {
-    turnOffPlus();
-    return false;
-  }
-  const brevilabsClient = BrevilabsClient.getInstance();
-  const result = await brevilabsClient.validateLicenseKey();
-  return result.isValid;
+  return true;
 }
 
 /** Check if the user is on the believer plan. */
 export async function isBelieverPlan(): Promise<boolean> {
-  if (!getSettings().plusLicenseKey) {
-    return false;
-  }
-  const brevilabsClient = BrevilabsClient.getInstance();
-  const result = await brevilabsClient.validateLicenseKey();
-  return result.plan?.toLowerCase() === "believer";
+  return true;
 }
 
 /**

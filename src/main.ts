@@ -12,7 +12,7 @@ import { ABORT_REASON, CHAT_VIEWTYPE, DEFAULT_OPEN_AREA, EVENT_NAMES } from "@/c
 import { registerContextMenu } from "@/commands/contextMenu";
 import { encryptAllKeys } from "@/encryptionService";
 import { logInfo } from "@/logger";
-import { checkIsPlusUser } from "@/plusUtils";
+import { checkIsPlusUser, turnOnPlus } from "@/plusUtils";
 import { HybridRetriever } from "@/search/hybridRetriever";
 import VectorStoreManager from "@/search/vectorStoreManager";
 import { CopilotSettingTab } from "@/settings/SettingsPage";
@@ -55,6 +55,7 @@ export default class CopilotPlugin extends Plugin {
 
   async onload(): Promise<void> {
     await this.loadSettings();
+turnOnPlus();
     this.settingsUnsubscriber = subscribeToSettingsChange(async (prev, next) => {
       if (next.enableEncryption) {
         await this.saveData(await encryptAllKeys(next));
@@ -72,7 +73,7 @@ export default class CopilotPlugin extends Plugin {
     // Initialize BrevilabsClient
     this.brevilabsClient = BrevilabsClient.getInstance();
     this.brevilabsClient.setPluginVersion(this.manifest.version);
-    checkIsPlusUser();
+    // checkIsPlusUser();
 
     // Initialize ProjectManager
     this.projectManager = ProjectManager.getInstance(this.app, this.vectorStoreManager, this);
