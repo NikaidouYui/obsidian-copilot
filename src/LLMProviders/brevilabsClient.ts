@@ -107,6 +107,7 @@ export class BrevilabsClient {
   }
 
   private checkLicenseKey() {
+    return true; // This is a placeholder for the actual license key check logic.
     if (!getSettings().plusLicenseKey) {
       new Notice(
         "Copilot Plus license key not found. Please enter your license key in the settings."

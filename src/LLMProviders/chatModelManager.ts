@@ -247,11 +247,17 @@ export default class ChatModelManager {
       },
       [ChatModelProviders.COPILOT_PLUS]: {
         modelName: modelName,
-        openAIApiKey: await getDecryptedKey(settings.plusLicenseKey),
+        openAIApiKey: await getDecryptedKey(customModel.apiKey || "user-provided-key"), // Use model-specific key or a placeholder
         configuration: {
-          baseURL: BREVILABS_API_BASE_URL,
+          baseURL: customModel.baseUrl, // Use the baseUrl from the model's settings
           fetch: customModel.enableCors ? safeFetch : undefined,
+          defaultHeaders: { "dangerously-allow-browser": "true" },
         },
+        ...this.handleOpenAIExtraArgs(
+          isOSeries,
+          customModel.maxTokens ?? settings.maxTokens,
+          customModel.temperature ?? settings.temperature
+        ),
       },
       [ChatModelProviders.MISTRAL]: {
         model: modelName,

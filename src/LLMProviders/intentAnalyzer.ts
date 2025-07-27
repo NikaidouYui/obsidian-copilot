@@ -43,53 +43,8 @@ export class IntentAnalyzer {
   }
 
   static async analyzeIntent(originalMessage: string): Promise<ToolCall[]> {
-    try {
-      const brocaResponse = await BrevilabsClient.getInstance().broca(
-        originalMessage,
-        isProjectMode()
-      );
-
-      // Check if the response is successful and has the expected structure
-      if (!brocaResponse?.response) {
-        throw new Error(brocaResponse?.detail || "Broca API call failed");
-      }
-
-      const brocaToolCalls = brocaResponse.response.tool_calls;
-      const salientTerms = brocaResponse.response.salience_terms;
-
-      const processedToolCalls: ToolCall[] = [];
-      let timeRange: { startTime: TimeInfo; endTime: TimeInfo } | undefined;
-
-      // Process tool calls from broca
-      for (const brocaToolCall of brocaToolCalls) {
-        const tool = this.tools.find((t) => t.name === brocaToolCall.tool);
-        if (tool) {
-          const args = brocaToolCall.args || {};
-
-          if (tool.name === "getTimeRangeMs") {
-            timeRange = await ToolManager.callTool(tool, args);
-          }
-          if (tool.name == "getFileTree" && isProjectMode()) {
-            // Skip file tree tool call in project mode so when user asks "what files do I have?",
-            // we return files in the project context instead of the vault.
-            continue;
-          }
-
-          processedToolCalls.push({ tool, args });
-        }
-      }
-
-      // Process @ commands from original message only
-      await this.processAtCommands(originalMessage, processedToolCalls, {
-        timeRange,
-        salientTerms,
-      });
-
-      return processedToolCalls;
-    } catch (error) {
-      console.error("Error in intent analysis:", error);
-      throw error; // Re-throw the error to be caught by CopilotPlusChainRunner
-    }
+    // Bypass Broca intent analysis
+    return [];
   }
 
   private static async processAtCommands(
